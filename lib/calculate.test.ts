@@ -5,6 +5,7 @@ import {
   isStreakAlive,
   aggregateCalendars,
   calculateWrappedStats,
+  findTodayIndex,
 } from './calculate';
 import type { ContributionCalendar } from '../types';
 
@@ -873,5 +874,37 @@ describe('calculateWrappedStats', () => {
 
     // Assert the ratio is exactly 100%
     expect(result.weekendRatio).toBe(100);
+  });
+});
+
+describe('findTodayIndex', () => {
+  it('returns index when date is found', () => {
+    const days = [
+      { date: '2024-01-01', contributionCount: 1 },
+      { date: '2024-01-02', contributionCount: 2 },
+      { date: '2024-01-03', contributionCount: 3 },
+    ];
+
+    const result = findTodayIndex(days, 'UTC', new Date('2024-01-02T12:00:00Z'));
+
+    expect(result).toBe(1);
+  });
+
+  it('falls back to last index when date is not found', () => {
+    const days = [
+      { date: '2024-01-01', contributionCount: 1 },
+      { date: '2024-01-02', contributionCount: 2 },
+      { date: '2024-01-03', contributionCount: 3 },
+    ];
+
+    const result = findTodayIndex(days, 'UTC', new Date('2024-01-10T12:00:00Z'));
+
+    expect(result).toBe(2);
+  });
+
+  it('returns -1 for empty days array', () => {
+    const result = findTodayIndex([], 'UTC', new Date('2024-01-10T12:00:00Z'));
+
+    expect(result).toBe(-1);
   });
 });
