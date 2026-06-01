@@ -151,13 +151,18 @@ function LandingContent() {
     return () => controller.abort();
   }, [badgeUrl, hasUsername]);
 
-  const copyToClipboard = () => {
+  const copyToClipboard = async () => {
     if (!hasUsername) return;
+
+    try {
+      await navigator.clipboard.writeText(markdown);
+    } catch {
+      setCopied(false);
+      return;
+    }
 
     trackUser(trimmedUsername);
     addSearch(trimmedUsername);
-
-    navigator.clipboard.writeText(markdown);
     setCopied(true);
     setTimeout(() => {
       guideRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });

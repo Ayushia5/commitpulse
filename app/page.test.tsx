@@ -192,11 +192,45 @@ describe('LandingPage', () => {
     });
   });
 
-  it('renders the FeatureCards', () => {
+  it('does not show copied state when clipboard write fails', async () => {
+    vi.mocked(navigator.clipboard.writeText).mockRejectedValueOnce(new Error('Permission denied'));
+
     render(<LandingPage />);
-    expect(screen.getByText('Real-time Sync')).toBeDefined();
-    expect(screen.getByText('Theme Engine')).toBeDefined();
-    expect(screen.getByText('Isometric Math')).toBeDefined();
+    const input = screen.getByPlaceholderText('Enter GitHub Username') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'jhasourav07' } });
+
+    const copyButton = screen.getByText('Copy Link').closest('button');
+    fireEvent.click(copyButton!);
+
+    await waitFor(() => {
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+        expect.stringContaining('/api/streak?user=jhasourav07')
+      );
+    });
+
+    expect(screen.queryByText('Copied')).toBeNull();
+    expect(screen.queryByText('Your Monolith is Ready - Deploy It in 4 Steps')).toBeNull();
+  });
+
+  it('disables Copy Link button when username is empty', () => {
+    render(<LandingPage />);
+    const copyButton = screen.getByText('Copy Link').closest('button');
+    expect(copyButton?.disabled).toBe(true);
+  });
+
+  it('does not copy link when username is empty', () => {
+    render(<LandingPage />);
+    const copyButton = screen.getByText('Copy Link').closest('button');
+    fireEvent.click(copyButton!);
+    expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
+  });
+
+  it('renders exactly 3 FeatureCards with correct titles', () => {
+    render(<LandingPage />);
+    const featureHeadings = screen.getAllByRole('heading', { level: 3 });
+    expect(featureHeadings).toHaveLength(3);
+    const titles = featureHeadings.map((h) => h.textContent);
+    expect(titles).toEqual(['Real-time Sync', 'Theme Engine', 'Isometric Math']);
   });
 
   it('renders the CustomizeCTA', () => {
