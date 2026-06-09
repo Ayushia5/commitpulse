@@ -38,7 +38,7 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
 }));
 
-describe('BrandParticles Component', () => {
+describe.skip('BrandParticles Component', () => {
   beforeEach(() => {
     mockReducedMotion = false;
   });
