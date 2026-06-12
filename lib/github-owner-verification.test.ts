@@ -7,7 +7,10 @@ describe('verifyGitHubOwner', () => {
   });
 
   it('rejects requests without a bearer token', async () => {
+ fix/5193-notification-ownership
     const result = await verifyGitHubOwner(new Request('http://localhost/api/notify'), 'octocat');
+    const result = await verifyGitHubOwner(new Request('http://localhost/api/profile'), 'octocat');
+ main
 
     expect(result).toEqual({
       verified: false,
@@ -16,11 +19,19 @@ describe('verifyGitHubOwner', () => {
     });
   });
 
+ fix/5193-notification-ownership
   it('verifies a matching GitHub account without leaking or storing the token', async () => {
     const fetchSpy = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response(JSON.stringify({ login: 'OctoCat' }), { status: 200 }));
     const request = new Request('http://localhost/api/notify', {
+
+  it('verifies a matching GitHub account', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify({ login: 'OctoCat' }), { status: 200 }));
+    const request = new Request('http://localhost/api/profile', {
+ main
       headers: { Authorization: 'Bearer caller-token' },
     });
 
@@ -38,7 +49,11 @@ describe('verifyGitHubOwner', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ login: 'attacker' }), { status: 200 })
     );
+ fix/5193-notification-ownership
     const request = new Request('http://localhost/api/notify', {
+
+    const request = new Request('http://localhost/api/profile', {
+ main
       headers: { Authorization: 'Bearer attacker-token' },
     });
 
@@ -47,9 +62,15 @@ describe('verifyGitHubOwner', () => {
     expect(result).toMatchObject({ verified: false, status: 403 });
   });
 
+ fix/5193-notification-ownership
   it('rejects invalid tokens with a controlled response', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 401 }));
     const request = new Request('http://localhost/api/notify', {
+
+  it('rejects invalid tokens without exposing them', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 401 }));
+    const request = new Request('http://localhost/api/profile', {
+ main
       headers: { Authorization: 'Bearer expired-token' },
     });
 
@@ -61,7 +82,11 @@ describe('verifyGitHubOwner', () => {
 
   it('fails closed when GitHub ownership verification is unavailable', async () => {
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('network failure'));
+fix/5193-notification-ownership
     const request = new Request('http://localhost/api/notify', {
+
+    const request = new Request('http://localhost/api/profile', {
+ main
       headers: { Authorization: 'Bearer caller-token' },
     });
 
