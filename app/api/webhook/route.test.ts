@@ -25,7 +25,7 @@ describe('POST /api/webhook', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env = { ...originalEnv };
-    process.env.NODE_ENV = 'test';
+    (process.env as Record<string, string>).NODE_ENV = 'test';
   });
 
   afterEach(() => {
