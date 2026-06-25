@@ -20,7 +20,6 @@ vi.mock('@/lib/rate-limit', () => ({
     'X-RateLimit-Reset': result.reset.toString(),
   })),
   notifyRateLimiter: {
-    check: vi.fn().mockResolvedValue(true),
     checkWithResult: vi.fn().mockResolvedValue({
       success: true,
       limit: 5,
@@ -71,7 +70,12 @@ describe('POST /api/notify', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env = { ...originalEnv, MONGODB_URI: 'mongodb://localhost/test' };
-    vi.mocked(notifyRateLimiter.check).mockResolvedValue(true);
+    vi.mocked(notifyRateLimiter.checkWithResult).mockResolvedValue({
+      success: true,
+      limit: 60,
+      remaining: 59,
+      reset: Date.now() + 60000,
+    });
     vi.mocked(gitHubUserValidator.validateUser).mockResolvedValue(true);
     vi.mocked(verifyGitHubOwner).mockResolvedValue({ verified: true });
     vi.mocked(Notification.findOne).mockResolvedValue(null);
@@ -301,7 +305,7 @@ describe('POST /api/notify', () => {
   });
 
   it('allows updates with a valid notification management token', async () => {
-    const managementToken = 'valid-management-token';
+    const managementToken = 'cpn_valid-management-token';
     vi.mocked(Notification.findOne).mockResolvedValue({
       username: 'tokenuser',
       email: 'old@example.com',
@@ -344,7 +348,12 @@ describe('DELETE /api/notify', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env = { ...originalEnv, MONGODB_URI: 'mongodb://localhost/test' };
-    vi.mocked(notifyRateLimiter.check).mockResolvedValue(true);
+    vi.mocked(notifyRateLimiter.checkWithResult).mockResolvedValue({
+      success: true,
+      limit: 60,
+      remaining: 59,
+      reset: Date.now() + 60000,
+    });
     vi.mocked(verifyGitHubOwner).mockResolvedValue({ verified: true });
   });
 
@@ -398,7 +407,12 @@ describe('GET /api/notify', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env = { ...originalEnv, MONGODB_URI: 'mongodb://localhost/test' };
-    vi.mocked(notifyRateLimiter.check).mockResolvedValue(true);
+    vi.mocked(notifyRateLimiter.checkWithResult).mockResolvedValue({
+      success: true,
+      limit: 60,
+      remaining: 59,
+      reset: Date.now() + 60000,
+    });
     vi.mocked(Notification.findOne).mockReset();
   });
 
@@ -553,7 +567,12 @@ describe('DELETE /api/notify', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env = { ...originalEnv, MONGODB_URI: 'mongodb://localhost/test' };
-    vi.mocked(notifyRateLimiter.check).mockResolvedValue(true);
+    vi.mocked(notifyRateLimiter.checkWithResult).mockResolvedValue({
+      success: true,
+      limit: 60,
+      remaining: 59,
+      reset: Date.now() + 60000,
+    });
     vi.mocked(verifyGitHubOwner).mockResolvedValue({ verified: true });
   });
 
