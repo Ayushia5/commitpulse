@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest, NextResponse } from 'next/server';
 import { middleware } from './middleware';
 import { rateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
@@ -42,10 +42,7 @@ describe('middleware', () => {
     });
 
     vi.mocked(getRateLimitHeaders).mockImplementation((result) => {
-      if (mockConfig.useRealRateLimit) {
-        return mockConfig.realGetRateLimitHeaders(result);
-      }
-      return {};
+      return mockConfig.realGetRateLimitHeaders(result);
     });
   });
 
