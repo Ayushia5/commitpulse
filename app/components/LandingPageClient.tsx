@@ -473,6 +473,9 @@ export default function LandingPageClient() {
           if (response.status === 404) {
             throw new Error('User not found');
           }
+          if (response.status === 429) {
+            throw new Error('GitHub API rate limit reached. Please wait a moment and try again.');
+          }
           const errData = await response.json();
           throw new Error(errData.error || 'Failed to fetch user');
         }

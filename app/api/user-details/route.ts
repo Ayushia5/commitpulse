@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { fetchUserProfile, fetchGitHubContributions } from '@/lib/github';
+import { fetchUserProfile, fetchGitHubContributions, RateLimitError } from '@/lib/github';
 import { calculateStreak } from '@/lib/calculate';
 import { validateGitHubUsername } from '@/lib/validations';
 import { getClientIp } from '@/utils/getClientIp';
@@ -65,6 +65,12 @@ export async function GET(request: Request) {
     const message = error instanceof Error ? error.message : '';
     if (message.includes('not found') || message.includes('404')) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+    if (error instanceof RateLimitError || message.toLowerCase().includes('rate limit')) {
+      return NextResponse.json(
+        { error: 'GitHub API rate limit reached. Please wait a moment and try again.' },
+        { status: 429 }
+      );
     }
     return NextResponse.json({ error: message || 'Failed to fetch user details' }, { status: 500 });
   }
