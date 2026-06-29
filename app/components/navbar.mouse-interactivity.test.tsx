@@ -176,7 +176,7 @@ describe('Navbar - Mouse Interactivity, Hovers & Touch Propagation', () => {
   it('applies hover feedback classes to pointer-like interactive navigation elements', () => {
     render(<Navbar />);
 
-    const generatorLink = screen.getByRole('link', { name: /generator/i });
+    const generatorLink = screen.getAllByRole('link', { name: /generator/i })[0];
     const themeButton = screen.getAllByRole('button', { name: /toggle theme/i })[0];
     const menuButton = screen.getByRole('button', { name: /open menu/i });
 
