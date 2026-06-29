@@ -467,7 +467,7 @@ export default function Navbar() {
 
             {/* Mobile Dropdown Menu */}
             {open ? (
-              <div className="border-t border-gray-100 dark:border-white/10 px-4 py-4 hidden">
+              <div className="border-t border-gray-100 dark:border-white/10 px-4 py-4 md:hidden">
                 <ul className="space-y-1">
                   <li className="mb-2">
                     <NavbarSearch variant="mobile" onNavigate={() => setOpen(false)} />

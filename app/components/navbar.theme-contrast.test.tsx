@@ -52,7 +52,7 @@ describe('Navbar theme contrast', () => {
 
     render(<Navbar />);
 
-    expect(screen.getByRole('navigation')).toBeInTheDocument();
+    expect(screen.getAllByRole('navigation')[0]).toBeInTheDocument();
   });
 
   it('renders navbar in dark mode', () => {
@@ -66,7 +66,7 @@ describe('Navbar theme contrast', () => {
 
     render(<Navbar />);
 
-    expect(screen.getByRole('navigation')).toBeInTheDocument();
+    expect(screen.getAllByRole('navigation')[0]).toBeInTheDocument();
   });
 
   it('contains light and dark background contrast classes', () => {

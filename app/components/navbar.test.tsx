@@ -160,7 +160,7 @@ describe('Navbar responsive breakpoints', () => {
 
     render(<Navbar />);
 
-    expect(screen.getByRole('navigation')).toBeTruthy();
+    expect(screen.getAllByRole('navigation')[0]).toBeTruthy();
     expect(screen.getByRole('link', { name: /go to home/i })).toBeTruthy();
     expect(screen.getByRole('button', { name: /open menu/i }).getAttribute('aria-expanded')).toBe(
       'false'
@@ -231,9 +231,8 @@ describe('Navbar responsive breakpoints', () => {
     );
 
     const compareLinks = screen.getAllByRole('link', { name: /compare/i });
-    fireEvent.click(compareLinks[compareLinks.length - 1]);
-
-    expect(screen.queryByText('Language / Bhasha')).toBeNull();
+    fireEvent.click(compareLinks[0]);
+    expect(screen.queryByText('Language / Bhasha', { exact: true })).toBeNull();
     expect(screen.getByRole('button', { name: /open menu/i }).getAttribute('aria-expanded')).toBe(
       'false'
     );

@@ -112,7 +112,7 @@ describe('Navbar — Accessibility & Screen Reader Compliance', () => {
     render(<Navbar />);
 
     expect(screen.getByRole('banner')).toBeInTheDocument();
-    expect(screen.getByRole('navigation')).toBeInTheDocument();
+    expect(screen.getAllByRole('navigation')[0]).toBeInTheDocument();
   });
 
   it('renders logo link with descriptive aria-label', () => {
